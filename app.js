@@ -17,6 +17,12 @@ app.get('/campgrounds', function(req, res){
   res.render("campgrounds",{campgrounds: campgrounds});
 });
 
+app.post("/campgrounds", function(req, res){
+  //get data from form and add to campgrounds array
+  res.send("You hit the Post route");
+  //redirect back to campgrounds page
+  redirect("/campgrounds");
+});
 
 
 
