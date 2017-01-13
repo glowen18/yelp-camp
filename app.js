@@ -35,6 +35,7 @@ app.get('/', function(req, res){
   res.render("home");
 });
 
+//Displays all campgrounds
 app.get("/campgrounds", function(req, res){
   //Get all campgrounds from DB
   Campground.find({}, function(err, allCampgrounds){
@@ -46,11 +47,11 @@ app.get("/campgrounds", function(req, res){
   })
 });
 
+//Adds new Campground
 app.post("/campgrounds", function(req, res){
-  //get data from form and add to campgrounds array
+  //data from form
   var name = req.body.name;
   var image = req.body.image;
-  //push new campground into campground array
   var newCampground = {name: name, image: image};
   //Create a new campground and save to DB
   Campground.create(newCampground, function(err, newlyCreated){
@@ -63,11 +64,16 @@ app.post("/campgrounds", function(req, res){
   });
 });
 
+//NEW - show form to create new campground
 app.get("/campgrounds/new", function(req, res){
   res.render("new.ejs")
 })
 
-
+app.get("/campgrounds/:id", function(req, res){
+  //find the campground with provided ID
+  //render Show template with that campground
+  res.render("show.ejs")
+})
 
 app.set('port', process.env.PORT || 3000);
 
