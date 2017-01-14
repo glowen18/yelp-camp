@@ -1,7 +1,7 @@
 var express = require("express"),
     app = express(),
     bodyParser = require("body-parser"),
-    mongoose = require("mongoose")
+    mongoose = require("mongoose");
 
 mongoose.connect("mongodb://localhost/yelp_camp");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -16,23 +16,8 @@ var campgroundSchema = new mongoose.Schema({
 //setup model
 var Campground = mongoose.model("Campground", campgroundSchema);
 
-// Campground.create(
-//   {
-//     name: "Granite Hill",
-//     image: "https://farm1.staticflickr.com/487/19484810473_a296c84de8.jpg",
-//     description: "Huge granite rocks."
-//   },
-//   function(err, campground){
-//     if(err){
-//       console.log(err);
-//     } else {
-//       console.log("Newly created campground: ");
-//       console.log(campground);
-//     }
-//   });
-
 app.get("/", function(req, res){
-  res.render("home");
+  res.render("/campgrounds");
 });
 
 //INDEX - show all campgrounds
@@ -47,6 +32,10 @@ app.get("/campgrounds", function(req, res){
   });
 });
 
+//NEW - show form to create new campground
+app.get("/campgrounds/new", function(req, res){
+  res.render("new");
+});
 
 //CREATE - add new campground to DB
 app.post("/campgrounds", function(req, res){
@@ -66,15 +55,10 @@ app.post("/campgrounds", function(req, res){
   });
 });
 
-//NEW - show form to create new campground
-app.get("/campgrounds/new", function(req, res){
-  res.render("new")
-});
-
 //SHOW - shows more info about one campground
 app.get("/campgrounds/:id", function(req, res){
   //find the campground with provided ID
-  res.render("show");
+
   Campground.findById(req.params.id, function(err, foundCampground){
     if(err){
       console.log(err);
