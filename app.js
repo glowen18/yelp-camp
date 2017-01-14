@@ -10,49 +10,51 @@ app.set("view engine", "ejs");
 // SCHEMA SETUP
 var campgroundSchema = new mongoose.Schema({
   name: String,
-  image: String
+  image: String,
+  description: String
 });
 
 var Campground = mongoose.model("Campground", campgroundSchema);
 
+// Campground.create(
+//   {
+//     name: "Granite Hill",
+//     image: "https://farm1.staticflickr.com/487/19484810473_a296c84de8.jpg",
+//     description: "Huge granite rocks."
+//   },
+//   function(err, campground){
+//     if(err){
+//       console.log(err);
+//     } else {
+//       console.log("Newly created campground: ");
+//       console.log(campground);
+//     }
+//   });
 
-var campgrounds = [
-  {name: "Wilson Creek", image: "https://farm9.staticflickr.com/8482/8274727348_114ee26227.jpg"},
-  {name: "Joshua Park", image: "https://farm4.staticflickr.com/3751/9056163116_be0a1ebed5.jpg"},
-  {name: "Mountain Pass", image: "https://farm4.staticflickr.com/3866/18659273934_9dd488d112.jpg"},
-  {name: "Wilson Creek", image: "https://farm9.staticflickr.com/8482/8274727348_114ee26227.jpg"},
-  {name: "Joshua Park", image: "https://farm4.staticflickr.com/3751/9056163116_be0a1ebed5.jpg"},
-  {name: "Mountain Pass", image: "https://farm4.staticflickr.com/3866/18659273934_9dd488d112.jpg"},
-  {name: "Wilson Creek", image: "https://farm9.staticflickr.com/8482/8274727348_114ee26227.jpg"},
-  {name: "Joshua Park", image: "https://farm4.staticflickr.com/3751/9056163116_be0a1ebed5.jpg"},
-  {name: "Mountain Pass", image: "https://farm4.staticflickr.com/3866/18659273934_9dd488d112.jpg"},
-  {name: "Wilson Creek", image: "https://farm9.staticflickr.com/8482/8274727348_114ee26227.jpg"},
-  {name: "Joshua Park", image: "https://farm4.staticflickr.com/3751/9056163116_be0a1ebed5.jpg"},
-  {name: "Mountain Pass", image: "https://farm4.staticflickr.com/3866/18659273934_9dd488d112.jpg"}
-]
-
-app.get('/', function(req, res){
+app.get("/", function(req, res){
   res.render("home");
 });
 
-//Displays all campgrounds
+//INDEX - show all campgrounds
 app.get("/campgrounds", function(req, res){
   //Get all campgrounds from DB
   Campground.find({}, function(err, allCampgrounds){
     if(err){
       console.log(err);
     } else {
-      res.render("campgrounds",{campgrounds: allCampgrounds});
+      res.render("index",{campgrounds: allCampgrounds});
     }
-  })
+  });
 });
 
-//Adds new Campground
+
+//CREATE - add new campground to DB
 app.post("/campgrounds", function(req, res){
-  //data from form
+  //get data from form
   var name = req.body.name;
   var image = req.body.image;
-  var newCampground = {name: name, image: image};
+  var desc = req.body.description;
+  var newCampground = {name: name, image: image, description: desc}
   //Create a new campground and save to DB
   Campground.create(newCampground, function(err, newlyCreated){
     if(err){
@@ -67,13 +69,21 @@ app.post("/campgrounds", function(req, res){
 //NEW - show form to create new campground
 app.get("/campgrounds/new", function(req, res){
   res.render("new.ejs")
-})
+});
 
+//SHOW - shows more info about one campground
 app.get("/campgrounds/:id", function(req, res){
   //find the campground with provided ID
-  //render Show template with that campground
-  res.render("show.ejs")
-})
+  res.render("show");
+  Campground.findById(req.params.id, function(err, foundCampground){
+    if(err){
+      console.log(err);
+    } else {
+      //render Show template with that campground
+      res.render("show", {campground: foundCampground});
+    }
+  });
+});
 
 app.set('port', process.env.PORT || 3000);
 
