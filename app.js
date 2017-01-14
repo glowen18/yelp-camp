@@ -13,7 +13,7 @@ var campgroundSchema = new mongoose.Schema({
   image: String,
   description: String
 });
-
+//setup model
 var Campground = mongoose.model("Campground", campgroundSchema);
 
 // Campground.create(
@@ -50,11 +50,11 @@ app.get("/campgrounds", function(req, res){
 
 //CREATE - add new campground to DB
 app.post("/campgrounds", function(req, res){
-  //get data from form
+  //get data from form and add to DB
   var name = req.body.name;
   var image = req.body.image;
   var desc = req.body.description;
-  var newCampground = {name: name, image: image, description: desc}
+  var newCampground = {name: name, image: image, description: desc};
   //Create a new campground and save to DB
   Campground.create(newCampground, function(err, newlyCreated){
     if(err){
@@ -68,7 +68,7 @@ app.post("/campgrounds", function(req, res){
 
 //NEW - show form to create new campground
 app.get("/campgrounds/new", function(req, res){
-  res.render("new.ejs")
+  res.render("new")
 });
 
 //SHOW - shows more info about one campground
